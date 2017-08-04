@@ -3,7 +3,7 @@ import codecs
 import math
 
 
-NEW_LINE = '\r\n'
+NEW_LINE = '\n'
 
 def loadNlpResult(filePath, encoding='utf-8'):
     fr = codecs.open(filePath, 'r', encoding)

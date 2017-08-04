@@ -3,7 +3,7 @@ import sys
 import codecs
 import jieba
 
-NEW_LINE = '\r\n'
+NEW_LINE = '\n'
 
 
 def loadDocs(filePath, encoding='utf-8'):
@@ -74,14 +74,11 @@ def feature_process(text_list, my_feature_set):
 # 匹配 特征集
 
 
-if __name__ == '__main__':
+
+def segPos():
     pos_num = 0
-    unlabel_num = 0
-    test_num = 0
-
     stop_word_list = loadTYC() # 停用词集
-    my_feature_set = loadFeature() # 特征集
-
+    # my_feature_set = loadFeature() # 特征集
     
     # 处理 pos
     text_list = loadDocs("./InputFile/yuliao_pos.csv")
@@ -103,6 +100,10 @@ if __name__ == '__main__':
     # 处理 pos
 
 
+def segUnlabel():
+    unlabel_num = 0
+    stop_word_list = loadTYC() # 停用词集
+
     # 处理 unlabel
     text_list = loadDocs("./InputFile/yuliao_unlabel.csv")
     unlabel_num = len(text_list)
@@ -122,6 +123,9 @@ if __name__ == '__main__':
     print('unlabel Done')
     # 处理 unlabel
     
+def segTest():
+    test_num = 0
+    stop_word_list = loadTYC() # 停用词集
     
     # 处理 test
     text_list = loadDocs("./InputFile/yuliao_test.csv")
@@ -142,3 +146,7 @@ if __name__ == '__main__':
     print('test Done')
     # 处理 test
     
+if __name__ == '__main__':
+    segPos()
+    segUnlabel()
+    segTest()

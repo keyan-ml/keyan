@@ -3,7 +3,7 @@ import codecs
 import numpy as np
 import math
 
-NEW_LINE = '\r\n'
+NEW_LINE = '\n'
 
 def cal_len(vec):
     vec = np.mat(vec)

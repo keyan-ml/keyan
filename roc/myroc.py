@@ -6,7 +6,7 @@ import numpy as np
 import math
 from sklearn.cluster import KMeans
 
-NEW_LINE = '\r\n'
+NEW_LINE = '\n'
 
 words = 0
 size = 0
