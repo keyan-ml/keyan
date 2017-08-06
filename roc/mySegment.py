@@ -4,6 +4,7 @@ import codecs
 import jieba
 
 NEW_LINE = '\n'
+jieba.add_word('不喜欢')
 
 
 def loadDocs(filePath, encoding='utf-8'):

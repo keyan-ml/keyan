@@ -39,7 +39,7 @@ if __name__ == '__main__':
     word_list = list(word_set)
     word_list.sort()
     IG_list = []
-    a = 0
+    a = 1
     for word in word_list:
         IG = 0
         # pos
@@ -82,11 +82,36 @@ if __name__ == '__main__':
         print('cal IG', a, '/', len(word_list))
         a += 1
 
+    # f = codecs.open('./InputFile/IG.txt', 'w', 'utf-8')
+    mylen = len(word_list)
+    for i in range(0, len(word_list)):
+        max_i = IG_list[:mylen].index(max(IG_list[:mylen]))
+        word_list.append( word_list[max_i] )
+        word_list.remove(word_list[max_i])
+        IG_list.append( IG_list[max_i] )
+        IG_list.remove(IG_list[max_i])
+        mylen -= 1
+        print('process word cnt#', i)
+    # for i in range(0, len(word_list)):
+    #     f.write( word_list[i] + '\t' + str(IG_list[i]) + NEW_LINE )
+    #     print('write word cnt#', i)
+    # f.close()
+
+
     mOption = input('Input vector_n: ')
     while str(mOption) != 'EXIT':
         # times = len(word_list) // 2 # 去词的比例
         vector_n = int(mOption)
-        # vector_n = 2500
+        
+        f = codecs.open('./InputFile/feature_set.txt', 'w', 'utf-8')
+        for i in range(0, vector_n):
+            f.write( word_list[i] + ' ' + str(IG_list[i]) + NEW_LINE )
+            print('write', i)
+        f.close()
+        print('vector_n is', vector_n)
+        mOption = input('Input vector_n: ')
+
+        '''
         times = len(word_list) - vector_n
         temp_IG = []
         for ig in IG_list:
@@ -109,3 +134,4 @@ if __name__ == '__main__':
         f.close()
         print('vector_n is', vector_n)
         mOption = input('Input vector_n: ')
+        '''
