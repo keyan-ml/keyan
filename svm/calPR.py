@@ -1,7 +1,7 @@
 import os
 import codecs
 
-NEW_LINE = '\r\n'
+NEW_LINE = '\n'
 
 if __name__ == '__main__':
     pos_num = 0
@@ -40,9 +40,12 @@ if __name__ == '__main__':
         else:
             FP += 1
     
+    Acc = ( TP + TN ) / len(result_list)
     pos_P = TP / ( TP + FP )
     pos_R = TP / ( TP + FN )
-    Acc = ( TP + TN ) / len(result_list)
+    neg_P = TN / ( TN + FN )
+    neg_R = TN / ( TN + FP )
 
     print( "Accuracy: %.2f%c (%d correct, %d incorrect, %d total)" % (Acc * 100, '%', TP + TN, FP + FN, len(result_list)) )
-    print( "Precision/recall: %.2f%c/%.2f%c" % (pos_P * 100, '%', pos_R * 100, '%') )
+    print( "POS Precision/recall: %.2f%c/%.2f%c" % (pos_P * 100, '%', pos_R * 100, '%') )
+    print( "NEG Precision/recall: %.2f%c/%.2f%c" % (neg_P * 100, '%', neg_R * 100, '%') )
