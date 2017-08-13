@@ -84,6 +84,7 @@ if __name__ == '__main__':
     unlabel_num = len(unlabel_list)
     print('pos', pos_num, ',', 'unlabel', unlabel_num)
 
+    
     # bow
     feature_list = loadFeature('./InputFile/feature_set.txt')
     for i in range(0, len(pos_list)):
@@ -117,8 +118,10 @@ if __name__ == '__main__':
             else:
                 unlabel_list[i].remove( unlabel_list[i][j] )
     u_vector = []
+    u_id = []
     a = 0
-    for doc in unlabel_list:
+    for i in range(0, len(unlabel_list)):
+        doc = unlabel_list[i]
         words = list(toset(doc))
         words.sort()
         temp_vector = [0 for ii in range(0, len(feature_list))]
@@ -127,6 +130,7 @@ if __name__ == '__main__':
         if cal_len(temp_vector) != 0:
             temp_vector = norm(temp_vector)
             u_vector.append(temp_vector.tolist()[0])
+            u_id.append(i)
             print('u_vector', a)
             a += 1
     # bow
@@ -182,11 +186,13 @@ if __name__ == '__main__':
     while i < len(u_vector):
         print('process u_vector', i)
         d = u_vector[i]
-        if cos_sim(d, p_center) > cos_sim(d, u_center):
+        if cos_sim(d, p_center) >= cos_sim(d, u_center):
             u_vector.remove(d)
+            u_id.remove( u_id[i] )
         else:
             i += 1
     RN_vector = u_vector
+    RN_id = u_id
 
     print('[first]total ', len(RN_vector), '/', unlabel_num)
     # 找 可靠负例
@@ -253,10 +259,23 @@ if __name__ == '__main__':
             i += 1
         else:
             RN_vector.remove(RN_vector[i])
+            RN_id.remove(RN_id[i])
     # 计算余弦距离，重新确定可靠负例
     print('...finished')
 
     print('Here is them: ', len(RN_vector), '/', pre_cnt)
+    
+    
+    '''
+    # 保存RN到文件
+    fw = codecs.open('./InputFile/RN.txt', 'w', 'utf-8')
+    for i in range(0, len(RN_id)):
+        for j in range(0, len(unlabel_list[RN_id[i]])):
+            unlabel_list[RN_id[i]][j] = feature_list[ unlabel_list[RN_id[i]][j] ]
+        fw.write(' '.join(unlabel_list[RN_id[i]]) + NEW_LINE)
+        print('write', i)
+    fw.close()
+    '''
     
     # 保存为训练集
     fw = codecs.open('../svm/train.txt', 'w', 'utf-8')

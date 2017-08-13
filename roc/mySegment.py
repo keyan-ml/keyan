@@ -5,6 +5,7 @@ import jieba
 
 NEW_LINE = '\n'
 jieba.add_word('不喜欢')
+jieba.add_word('没有')
 
 
 def loadDocs(filePath, encoding='utf-8'):
@@ -39,13 +40,20 @@ def quTYC(text_list, stop_word_list):
         j = 0
         while j < len(text_list[i][-1]):
             word = text_list[i][-1][j]
+            '''
             flag = False
             for sw in stop_word_list:
-                if word in sw or sw in word:
+                # if word in sw or sw in word:
+                if sw in word:
                     flag = True
                     text_list[i][-1].remove( word )
                     break
             if flag == False:
+                j += 1
+            '''
+            if word in stop_word_list:
+                text_list[i][-1].remove( word )
+            else:
                 j += 1
         print('quTYC', i)
     return text_list
