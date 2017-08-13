@@ -2,8 +2,12 @@ import os
 import sys
 import codecs
 import jieba
+import platform
 
 NEW_LINE = '\n'
+if platform.system() == 'Windows':
+    NEW_LINE = '\r\n'
+
 jieba.add_word('不喜欢')
 jieba.add_word('没有')
 

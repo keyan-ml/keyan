@@ -1,9 +1,11 @@
 import os
 import codecs
 import math
-
+import platform
 
 NEW_LINE = '\n'
+if platform.system() == 'Windows':
+    NEW_LINE = '\r\n'
 
 def loadNlpResult(filePath, encoding='utf-8'):
     fr = codecs.open(filePath, 'r', encoding)
