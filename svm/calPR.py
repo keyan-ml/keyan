@@ -2,8 +2,6 @@ import os
 import codecs
 
 NEW_LINE = '\n'
-if platform.system() == 'Windows':
-    NEW_LINE = '\r\n'
 
 if __name__ == '__main__':
     pos_num = 0

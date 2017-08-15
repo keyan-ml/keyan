@@ -4,11 +4,8 @@ import codecs
 import numpy as np
 import math
 from sklearn.cluster import KMeans
-
-NEW_LINE = '\n'
-if platform.system() == 'Windows':
-    NEW_LINE = '\r\n'
     
+NEW_LINE= '\n'
 vector_size = 0
 
 

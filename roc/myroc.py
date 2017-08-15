@@ -5,11 +5,8 @@ import jieba
 import numpy as np
 import math
 from sklearn.cluster import KMeans
-import platform
 
 NEW_LINE = '\n'
-if platform.system() == 'Windows':
-    NEW_LINE = '\r\n'
 
 words = 0
 size = 0

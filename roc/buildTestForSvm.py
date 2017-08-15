@@ -2,11 +2,8 @@ import os
 import codecs
 import numpy as np
 import math
-import platform
 
 NEW_LINE = '\n'
-if platform.system() == 'Windows':
-    NEW_LINE = '\r\n'
 
 def cal_len(vec):
     vec = np.mat(vec)

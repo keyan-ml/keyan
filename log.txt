@@ -1,2 +1,28 @@
 2017/8/11
     我检查了训练语料和测试语料的分词结果（包含去停用词），发现去掉的词过多，导致一些表达该句含义的关键词也丢失了。然后更改了 mySegment.py 中去停用词部分的代码，即函数 quTYC()。然后重新试验，结果大喜。
+
+
+2017/8/15
+    刚看完第二个要重新看的语料，新增了118个pos。
+    随后进行了两组试验：
+        <1> 语料: 
+                pos用第一类，有1500多个，分五份，前四份用作pos，后一份用作test。
+                unlabel用未标注的，有10000多个。
+                test用第一类pos和第二类neg。其中neg分五份，前四份不动，后一份用作test。
+
+            结果: 
+                Accuracy: 92.07% (1092 correct, 94 incorrect, 1186 total)
+                POS Precision/recall: 89.27%/82.51% TP=283 FP=34 TotalPos=343
+                NEG Precision/recall: 93.10%/95.97%
+        <2> 语料: 
+                pos用第一类和第二类所有，有1800多个，分五份，前四份用作pos，后一份用作test。
+                unlabel用未标注的（同第一次），有10000多个。
+                test用第一类和第二类所有pos和第二类neg。其中neg分五份，前四份不动，后一份用作test。
+
+            结果: 
+                Accuracy: 87.03% (1087 correct, 162 incorrect, 1249 total)
+                POS Precision/recall: 89.69%/68.99% TP=287 FP=34 TotalPos=416
+                NEG Precision/recall: 86.11%/96.04%
+        （ps: 第一类指之前看的pos和neg，范围比较严格；第二类指之后看的pos和neg，范围比较宽松）
+
+        分析: 对比两次试验的 TP、FP、TotalPos值，可以发现: 第二次试验中，召回率较低的原因在于test中大部分新增的（第二类）pos都被错误分类。出现此现象的原因可能是用于训练的第二类pos数量太少，导致相关特征词收集不充分，进而判断出错。
