@@ -2,8 +2,11 @@ import os
 import codecs
 import numpy as np
 import math
+import platform
 
 NEW_LINE = '\n'
+if platform.system() == 'Windows':
+    NEW_LINE = '\r\n'
 
 def cal_len(vec):
     vec = np.mat(vec)
@@ -31,7 +34,13 @@ def loadTestNlpResult(filePath, encoding='utf-8'):
         parts = text_list[i].split('|')
         text_class.append(parts[0])
         # text_list[i] = parts[-1].strip()
-        text_list[i] = parts[-1].strip().split(' ')
+        # text_list[i] = parts[-1].strip().split(' ')
+        word_flag = parts[-1].strip().split(' ')
+        words = []
+        for j in range(0, len(word_flag)):
+            word_flag[j] = word_flag[j].split('/')
+            words.append(word_flag[j][0])
+        text_list[i] = words
     return text_class, text_list
 
 # def loadTfidfWord(filePath, encoding='utf-8'):

@@ -3,10 +3,14 @@ import sys
 import codecs
 import jieba
 import jieba.posseg as pseg
+import platform
 
 NEW_LINE = '\n'
+if platform.system() == 'Windows':
+    NEW_LINE = '\r\n'
 jieba.add_word('不喜欢')
 jieba.add_word('没有')
+jieba.add_word('奔驰', tag='nz')
 
 
 def loadDocs(filePath, encoding='utf-8'):
@@ -14,7 +18,7 @@ def loadDocs(filePath, encoding='utf-8'):
     content = f.read()
     f.close()
     text_list = content.split(NEW_LINE)
-    text_list.remove( text_list[-1] )
+    text_list.pop(-1)
     # for i in range(0, len(text_list)):
     #     text_list[i] = text_list[i].strip()
     return text_list
@@ -41,15 +45,14 @@ def loadTYC():
     content = f.read()
     f.close()
     stop_word_list = content.split(NEW_LINE)
-    stop_word_list.remove( stop_word_list[-1] )
+    stop_word_list.pop(-1)
     return stop_word_list
 
 def quTYC(text_list, flag_list, stop_word_list):
     for i in range(0, len(text_list)):
         j = 0
         while j < len(text_list[i][-1]):
-            word = text_list[i][-1][j]
-            flag = flag_list[i][j]
+            # word = text_list[i][-1][j]
             '''
             flag = False
             for sw in stop_word_list:
@@ -61,9 +64,9 @@ def quTYC(text_list, flag_list, stop_word_list):
             if flag == False:
                 j += 1
             '''
-            if word in stop_word_list:
-                text_list[i][-1].remove( word )
-                flag_list[i].remove(flag)
+            if text_list[i][-1][j] in stop_word_list:
+                text_list[i][-1].pop( j )
+                flag_list[i].pop(j)
             else:
                 j += 1
         print('quTYC', i)

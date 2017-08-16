@@ -5,8 +5,11 @@ import jieba
 import numpy as np
 import math
 from sklearn.cluster import KMeans
+import platform
 
 NEW_LINE = '\n'
+if platform.system() == 'Windows':
+    NEW_LINE = '\r\n'
 
 words = 0
 size = 0
@@ -55,11 +58,17 @@ def loadNlpResult(filePath, encoding='utf-8'):
     content = fr.read()
     fr.close()
     text_list = content.split(NEW_LINE)
-    text_list.remove(text_list[-1])
+    text_list.pop(-1)
     for i in range(0, len(text_list)):
         parts = text_list[i].split('|')
         # text_list[i] = parts[-1].strip()
-        text_list[i] = parts[-1].strip().split(' ')
+        # text_list[i] = parts[-1].strip().split(' ')
+        word_flag = parts[-1].strip().split(' ')
+        words = []
+        for j in range(0, len(word_flag)):
+            word_flag[j] = word_flag[j].split('/')
+            words.append(word_flag[j][0])
+        text_list[i] = words
     return text_list
 
 def loadFeature(filePath, encoding='utf-8'):
@@ -67,7 +76,7 @@ def loadFeature(filePath, encoding='utf-8'):
     content = f.read()
     f.close()
     text_list = content.split(NEW_LINE)
-    text_list.remove( text_list[-1] )
+    text_list.pop(-1)
     for i in range(0, len(text_list)):
         parts = text_list[i].split(' ')
         text_list[i] = parts[0]

@@ -1,29 +1,39 @@
 import os
 import codecs
 import math
-
+import platform
 
 NEW_LINE = '\n'
+if platform.system() == 'Windows':
+    NEW_LINE = '\r\n'
 
 def loadNlpResult(filePath, encoding='utf-8'):
     fr = codecs.open(filePath, 'r', encoding)
     content = fr.read()
     fr.close()
     text_list = content.split(NEW_LINE)
-    text_list.remove(text_list[-1])
+    text_list.pop(-1)
+    flag_list = []
     for i in range(0, len(text_list)):
         parts = text_list[i].split('|')
         # text_list[i] = parts[-1].strip()
-        text_list[i] = parts[-1].strip().split(' ')
-        for j in range(0, len(text_list[i])):
-            text_list[i][j] = text_list[i][j][:text_list[i][j].index('/')]
-    return text_list
+        # text_list[i] = parts[-1].strip().split(' ')
+        word_flag = parts[-1].strip().split(' ')
+        words = []
+        flags = []
+        for j in range(0, len(word_flag)):
+            word_flag[j] = word_flag[j].split('/')
+            words.append(word_flag[j][0])
+            flags.append(word_flag[j][1])
+        text_list[i] = words
+        flag_list.append(flags)
+    return text_list, flag_list
 
 
 if __name__ == '__main__':
-    pos_list = loadNlpResult('./InputFile/yuliao_pos.nlpresult')
+    pos_list, flag_pos_list = loadNlpResult('./InputFile/yuliao_pos.nlpresult')
     pos_num = len(pos_list)
-    neg_list = loadNlpResult('./InputFile/yuliao_unlabel.nlpresult')
+    neg_list, flag_neg_list = loadNlpResult('./InputFile/yuliao_unlabel.nlpresult')
     neg_num = len(neg_list)
     all_num = pos_num + neg_num
 
@@ -39,7 +49,28 @@ if __name__ == '__main__':
             word_set.add(word)
 
     word_list = list(word_set)
-    word_list.sort()
+    flag_dict = {}
+    for i in range(0, len(pos_list)):
+        for j in range(0, len(pos_list[i])):
+            if pos_list[i][j] == '奥迪' and flag_pos_list[i][j] == 'v':
+                print('yes')
+                exit()
+            flag_dict[pos_list[i][j]] = flag_pos_list[i][j]
+        print('make dict from pos', i, '/', len(pos_list) - 1)
+    for i in range(0, len(neg_list)):
+        for j in range(0, len(neg_list[i])):
+            if neg_list[i][j] == '奥迪' and flag_neg_list[i][j] == 'v':
+                print('yes')
+                exit()
+            flag_dict[neg_list[i][j]] = flag_neg_list[i][j]
+        print('make dict from neg', i, '/', len(neg_list) - 1)
+
+    # mword = input('Input word: ')
+    # while mword != 'EXIT':
+    #     print(mword + ', ' + flag_dict.get(mword, 'none'))
+    #     mword = input('Input word: ')
+
+    
     IG_list = []
     a = 1
     for word in word_list:
@@ -107,33 +138,9 @@ if __name__ == '__main__':
         
         f = codecs.open('./InputFile/feature_set.txt', 'w', 'utf-8')
         for i in range(0, vector_n):
-            f.write( word_list[i] + ' ' + str(IG_list[i]) + NEW_LINE )
+            f.write( word_list[i] + ' ' + flag_dict[word_list[i]] + ' ' + str(IG_list[i]) + NEW_LINE )
             print('write', i)
         f.close()
         print('vector_n is', vector_n)
         mOption = input('Input vector_n: ')
-
-        '''
-        times = len(word_list) - vector_n
-        temp_IG = []
-        for ig in IG_list:
-            temp_IG.append(ig)
-        temp_word = []
-        for w in word_list:
-            temp_word.append(w)
-        a = 0
-        for i in range(0, times):
-            min_index = temp_IG.index( min(temp_IG) )
-            temp_word.remove( temp_word[min_index] )
-            temp_IG.remove( temp_IG[min_index] )
-            print('remove', a)
-            a += 1
         
-        f = codecs.open('./InputFile/feature_set.txt', 'w', 'utf-8')
-        for i in range(0, len(temp_word)):
-            f.write( temp_word[i] + ' ' + str(temp_IG[i]) + NEW_LINE )
-            print('write', i)
-        f.close()
-        print('vector_n is', vector_n)
-        mOption = input('Input vector_n: ')
-        '''
