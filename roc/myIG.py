@@ -15,6 +15,8 @@ def loadNlpResult(filePath, encoding='utf-8'):
         parts = text_list[i].split('|')
         # text_list[i] = parts[-1].strip()
         text_list[i] = parts[-1].strip().split(' ')
+        for j in range(0, len(text_list[i])):
+            text_list[i][j] = text_list[i][j][:text_list[i][j].index('/')]
     return text_list
 
 

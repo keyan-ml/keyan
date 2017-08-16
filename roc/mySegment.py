@@ -2,6 +2,7 @@ import os
 import sys
 import codecs
 import jieba
+import jieba.posseg as pseg
 
 NEW_LINE = '\n'
 jieba.add_word('不喜欢')
@@ -19,13 +20,21 @@ def loadDocs(filePath, encoding='utf-8'):
     return text_list
 
 def mySegment(text_list):
+    flag_list = []
     for i in range(0, len(text_list)):
         parts = text_list[i].split('|')
-        sResult = jieba.lcut(parts[-1], cut_all=False)
+        # sResult = jieba.lcut(parts[-1])
+        words = pseg.cut(parts[-1])
+        sResult = []
+        flags = []
+        for w in words:
+            sResult.append( w.word )
+            flags.append( w.flag )
         text_list[i] = parts[:-1]
         text_list[i].append( sResult )
+        flag_list.append( flags )
         print('mySegment', i)
-    return text_list
+    return text_list, flag_list
 
 def loadTYC():
     f = codecs.open('../data/stop_word_UTF_8.txt', 'r', encoding='utf-8')
@@ -35,11 +44,12 @@ def loadTYC():
     stop_word_list.remove( stop_word_list[-1] )
     return stop_word_list
 
-def quTYC(text_list, stop_word_list):
+def quTYC(text_list, flag_list, stop_word_list):
     for i in range(0, len(text_list)):
         j = 0
         while j < len(text_list[i][-1]):
             word = text_list[i][-1][j]
+            flag = flag_list[i][j]
             '''
             flag = False
             for sw in stop_word_list:
@@ -53,12 +63,13 @@ def quTYC(text_list, stop_word_list):
             '''
             if word in stop_word_list:
                 text_list[i][-1].remove( word )
+                flag_list[i].remove(flag)
             else:
                 j += 1
         print('quTYC', i)
-    return text_list
+    return text_list, flag_list
 
-
+'''
 # 匹配 特征集
 def loadFeature():
     f = codecs.open('./InputFile/feature_set.txt', 'r', encoding='utf-8')
@@ -81,7 +92,7 @@ def feature_process(text_list, my_feature_set):
         print('feature_process', i)
     return text_list
 # 匹配 特征集
-
+'''
 
 
 def segPos():
@@ -93,16 +104,21 @@ def segPos():
     text_list = loadDocs("./InputFile/yuliao_pos.csv")
     pos_num = len(text_list)
 
-    text_list = mySegment(text_list) # 分词
-    text_list = quTYC(text_list, stop_word_list) # 去停用词
+    text_list, flag_list = mySegment(text_list) # 分词
+    text_list, flag_list = quTYC(text_list, flag_list, stop_word_list) # 去停用词
     # text_list = feature_process(text_list, my_feature_set) # 有关特征词处理
 
     fw = codecs.open('./InputFile/yuliao_pos.nlpresult', 'w', encoding='utf-8')
-    for doc in text_list:
+    for i in range(0, len(text_list)):
+        doc = text_list[i]
+        flags = flag_list[i]
         if doc[-1] != []:
-            for i in range(0, len(doc) - 1):
-                fw.write(doc[i] + '|')
-            fw.write( ' '.join(doc[-1]) + NEW_LINE )
+            for j in range(0, len(doc) - 1):
+                fw.write(doc[j] + '|')
+            temp_str = ''
+            for j in range(0, len(doc[-1])):
+                temp_str += doc[-1][j] + '/' + flags[j] + ' '
+            fw.write( temp_str.strip() + NEW_LINE )
     fw.close()
 
     print('pos Done')
@@ -117,16 +133,21 @@ def segUnlabel():
     text_list = loadDocs("./InputFile/yuliao_unlabel.csv")
     unlabel_num = len(text_list)
 
-    text_list = mySegment(text_list) # 分词
-    text_list = quTYC(text_list, stop_word_list) # 去停用词
+    text_list, flag_list = mySegment(text_list) # 分词
+    text_list, flag_list = quTYC(text_list, flag_list, stop_word_list) # 去停用词
     # text_list = feature_process(text_list, my_feature_set) # 有关特征词处理
 
     fw = codecs.open('./InputFile/yuliao_unlabel.nlpresult', 'w', encoding='utf-8')
-    for doc in text_list:
+    for i in range(0, len(text_list)):
+        doc = text_list[i]
+        flags = flag_list[i]
         if doc[-1] != []:
-            for i in range(0, len(doc) - 1):
-                fw.write(doc[i] + '|')
-            fw.write( ' '.join(doc[-1]) + NEW_LINE )
+            for j in range(0, len(doc) - 1):
+                fw.write(doc[j] + '|')
+            temp_str = ''
+            for j in range(0, len(doc[-1])):
+                temp_str += doc[-1][j] + '/' + flags[j] + ' '
+            fw.write( temp_str.strip() + NEW_LINE )
     fw.close()
 
     print('unlabel Done')
@@ -140,16 +161,21 @@ def segTest():
     text_list = loadDocs("./InputFile/yuliao_test.csv")
     test_num = len(text_list)
 
-    text_list = mySegment(text_list) # 分词
-    text_list = quTYC(text_list, stop_word_list) # 去停用词
+    text_list, flag_list = mySegment(text_list) # 分词
+    text_list, flag_list = quTYC(text_list, flag_list, stop_word_list) # 去停用词
     # text_list = feature_process(text_list, my_feature_set) # 有关特征词处理
 
     fw = open('./InputFile/yuliao_test.nlpresult', 'w', encoding='utf-8')
-    for doc in text_list:
+    for i in range(0, len(text_list)):
+        doc = text_list[i]
+        flags = flag_list[i]
         if doc[-1] != []:
-            for i in range(0, len(doc) - 1):
-                fw.write(doc[i] + '|')
-            fw.write( ' '.join(doc[-1]) + "\n" )
+            for j in range(0, len(doc) - 1):
+                fw.write(doc[j] + '|')
+            temp_str = ''
+            for j in range(0, len(doc[-1])):
+                temp_str += doc[-1][j] + '/' + flags[j] + ' '
+            fw.write( temp_str.strip() + NEW_LINE )
     fw.close()
 
     print('test Done')
