@@ -44,10 +44,10 @@ if __name__ == '__main__':
             FP += 1
     
     Acc = ( TP + TN ) / len(result_list)
-    pos_P = TP / ( TP + FP )
-    pos_R = TP / ( TP + FN )
-    neg_P = TN / ( TN + FN )
-    neg_R = TN / ( TN + FP )
+    pos_P = TP / ( TP + FP + 1 )
+    pos_R = TP / ( TP + FN + 1 )
+    neg_P = TN / ( TN + FN + 1 )
+    neg_R = TN / ( TN + FP + 1 )
 
     print( "Accuracy: %.2f%c (%d correct, %d incorrect, %d total)" % (Acc * 100, '%', TP + TN, FP + FN, len(result_list)) )
     print( "POS Precision/recall: %.2f%c/%.2f%c TP=%d FP=%d TotalPos=%d" % (pos_P * 100, '%', pos_R * 100, '%', TP, FP, TP + FN) )
